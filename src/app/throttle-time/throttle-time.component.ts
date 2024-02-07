@@ -29,7 +29,7 @@ export class ThrottleTimeComponent {
 
     // Subscribe to the resulting observable after applying throttleTime
     // Log a message when a "double click" occurs (clicks within the specified time interval)
-    result.subscribe((result) => {
+    result.subscribe(() => {
       console.log('double clicked');
     });
   }
