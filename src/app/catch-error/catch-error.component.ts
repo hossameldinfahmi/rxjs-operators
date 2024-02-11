@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { catchError, interval, map } from 'rxjs';
+import { catchError, interval, map, mergeMap, retry, retryWhen, take, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-catch-error',
@@ -39,8 +39,19 @@ export class CatchErrorComponent {
         // // 4. If you want to rethrow the error, you can do so by returning the error using 'of'
         // // This will propagate the error to the subscriber, and the observable will complete with an error
         // // This is commented out to show how other scenarios behave
-        return caught$;
-      })
+        return error;
+      }),
+      // retry(2)
+      retryWhen((errors) =>
+        errors.pipe(
+          // Log the error
+          tap((err) => console.error('Error occurred:', err)),
+          // Retry a maximum of 2 times
+          take(2),
+          // Delay for 2 seconds before retrying
+          mergeMap(() => interval(2000))
+        )
+      )
     );
 
     // Subscribe to the observable
